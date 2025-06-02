@@ -80,9 +80,13 @@ class ExcelMapperApp(ctk.CTk):
             "Prefcode7": "CCODE2", "Seventh_Preference": "CNAME2", "SRN": "SRN"
         }
 
-        paper_names = [
+        PEP6paper_names = [
             "Ability", "Mathematics PT", "Language Arts PT",
             "Mathematics CBT", "Science CBT", "Social Studies CBT", "Language Arts CBT"
+        ]
+
+        PEP5paper_names=[
+            "Mathematics PT", "Science PT", "Social Studies PT", "Language PT"
         ]
 
         df = pd.read_excel(self.data_path)
@@ -95,6 +99,7 @@ class ExcelMapperApp(ctk.CTk):
             new_row = []
             for header in headers:
                 key = next((k for k, v in field_map.items() if v == header), None)
+
                 if key in row:
                     val = row[key]
                     if header == "PATH":
@@ -102,20 +107,38 @@ class ExcelMapperApp(ctk.CTk):
                     elif header == "WARD":
                         val = "Y" if pd.notna(row.get("WardofState")) else "N"
                     new_row.append(val)
+
                 elif header == "TEL_NUM":
-                    val = row.get("MotherContact") or row.get("FatherContact") or row.get("GuardianContact") or ""
+                    if pd.notna(row.get("MotherContact")) and str(row.get("MotherContact")).strip():
+                        val = row.get("MotherContact", "")
+                    elif pd.notna(row.get("FatherContact")) and str(row.get("FatherContact")).strip():
+                        val = row.get("FatherContact", "")
+                    elif pd.notna(row.get("GuardianContact")) and str(row.get("GuardianContact")).strip():
+                        val = row.get("GuardianContact", "")
+                    else:
+                        val = ""
                     new_row.append(val)
+
                 elif header == "GNAME":
-                    val = (
-                        row.get("Mother") if pd.notna(row.get("MotherContact")) else
-                        row.get("Father") if pd.notna(row.get("FatherContact")) else
-                        row.get("Gaurdian") if pd.notna(row.get("GuardianContact")) else
-                        row.get("Mother") or row.get("Father") or row.get("Gaurdian") or ""
-                    )
+                    if pd.notna(row.get("MotherContact")) and str(row.get("MotherContact")).strip():
+                        val = row.get("Mother", "")
+                    elif pd.notna(row.get("FatherContact")) and str(row.get("FatherContact")).strip():
+                        val = row.get("Father", "")
+                    elif pd.notna(row.get("GuardianContact")) and str(row.get("GuardianContact")).strip():
+                        val = row.get("Gaurdian", "")
+                    elif pd.notna(row.get("Mother")) and str(row.get("Mother")).strip():
+                        val = row.get("Mother", "")
+                    elif pd.notna(row.get("Father")) and str(row.get("Father")).strip():
+                        val = row.get("Father", "")
+                    elif pd.notna(row.get("Gaurdian")) and str(row.get("Gaurdian")).strip():
+                        val = row.get("Gaurdian", "")
+                    else:
+                        val = ""
                     new_row.append(val)
+                 
                 elif header.startswith("PAPER0") and header[-2:].isdigit():
                     index = int(header[-2:]) - 1
-                    new_row.append(paper_names[index] if index < len(paper_names) else "")
+                    new_row.append(PEP6paper_names[index] if index < len(PEP6paper_names) else "")
                 else:
                     new_row.append(None)
             rows_to_add.append(new_row)
