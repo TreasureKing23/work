@@ -29,10 +29,10 @@ class ExcelMapperApp(ctk.CTk):
         self.exam_dropdown = ctk.CTkOptionMenu(self, variable=self.selected_exam, values=["PEP4", "PEP5", "PEP6"])
         self.exam_dropdown.pack(pady=5)
 
-        self.input_btn = ctk.CTkButton(self, text="Select Format File (Workbook1)", command=self.select_input)
+        self.input_btn = ctk.CTkButton(self, text="Select Input Specification", command=self.select_input)
         self.input_btn.pack(pady=10)
 
-        self.data_btn = ctk.CTkButton(self, text="Select Data File (Workbook2)", command=self.select_data)
+        self.data_btn = ctk.CTkButton(self, text="Select Data File", command=self.select_data)
         self.data_btn.pack(pady=10)
 
         self.output_btn = ctk.CTkButton(self, text="Choose Output Location", command=self.select_output)
@@ -49,12 +49,12 @@ class ExcelMapperApp(ctk.CTk):
         self.status_label.pack()
 
     def select_input(self):
-        self.input_path = filedialog.askopenfilename(title="Select Workbook1")
-        self.input_btn.configure(text="Workbook1 Selected")
+        self.input_path = filedialog.askopenfilename(title="Select Input Specification")
+        self.input_btn.configure(text="Input Specification Selected")
 
     def select_data(self):
-        self.data_path = filedialog.askopenfilename(title="Select Workbook2")
-        self.data_btn.configure(text="Workbook2 Selected")
+        self.data_path = filedialog.askopenfilename(title="Select Data File")
+        self.data_btn.configure(text="Data File Selected")
 
     def select_output(self):
         self.output_path = filedialog.asksaveasfilename(defaultextension=".xlsx", title="Save Output As")
@@ -73,7 +73,7 @@ class ExcelMapperApp(ctk.CTk):
         self.update_idletasks()
 
         field_map = {
-s            "ExamCode": "EXAMID", "ExamYear": "PERIODID", "EXCID": "CANID", "ERN": "ERN",
+            "ExamCode": "EXAMID", "ExamYear": "PERIODID", "EXCID": "CANID", "ERN": "ERN",
             "FirstName": "FNAME", "Lastname": "SURNAME", "Middlename": "MNAME",
             "SchoolId": "SCHOOLID", "SchoolName": "SCHOOLN", "Gender": "GENDER",
             "DateofBirth": "DOB", "Address": "ADDR1", "Address_2": "ADDR2",
