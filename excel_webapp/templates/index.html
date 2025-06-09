@@ -1,27 +1,44 @@
 {% extends "base.html" %}
 {% block content %}
-<h2 class="mb-4">📄 Excel Data Formatter (Web)</h2>
+<div class="bg-white border border-gray-200 shadow-md rounded-2xl p-8 space-y-6">
+  <h2 class="text-2xl font-semibold text-gray-800">📄 Excel Data Formatter</h2>
 
-<form method="POST" enctype="multipart/form-data" class="card card-body bg-secondary">
-  <div class="mb-3">
-    <label class="form-label">Select Exam</label>
-    <select name="exam" class="form-select">
-      <option value="PEP4">PEP4</option>
-      <option value="PEP5">PEP5</option>
-      <option value="PEP6" selected>PEP6</option>
-    </select>
-  </div>
+  <form method="POST" enctype="multipart/form-data" class="space-y-6">
 
-  <div class="mb-3">
-    <label class="form-label">Input Specification (Workbook 1)</label>
-    <input type="file" name="input_spec" accept=".xlsx" class="form-control" required />
-  </div>
+    <!-- Exam Selection -->
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-700">Select Exam</label>
+      <select name="exam" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800">
+        <option value="PEP4">PEP4</option>
+        <option value="PEP5">PEP5</option>
+        <option value="PEP6" selected>PEP6</option>
+      </select>
+    </div>
 
-  <div class="mb-3">
-    <label class="form-label">Data File (Workbook 2)</label>
-    <input type="file" name="data_file" accept=".xlsx" class="form-control" required />
-  </div>
+    <!-- Workbook 1 -->
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-700">Input Specification (Workbook 1)</label>
+      <input type="file" name="input_spec" accept=".xlsx"
+             class="w-full file:bg-[#3a8cc7] file:text-white file:rounded-md file:px-4 file:py-2
+                    text-sm border border-gray-300 rounded-lg cursor-pointer bg-white text-gray-800" required>
+    </div>
 
-  <button type="submit" class="btn btn-primary">Run Formatting &amp; Download</button>
-</form>
+    <!-- Workbook 2 -->
+    <div>
+      <label class="block mb-2 text-sm font-medium text-gray-700">Data File (Workbook 2)</label>
+      <input type="file" name="data_file" accept=".xlsx"
+             class="w-full file:bg-[#3a8cc7] file:text-white file:rounded-md file:px-4 file:py-2
+                    text-sm border border-gray-300 rounded-lg cursor-pointer bg-white text-gray-800" required>
+    </div>
+
+    <!-- Button -->
+    <div class="text-center">
+      <button type="submit"
+              class="bg-[#3a8cc7] hover:bg-blue-600 transition-all px-6 py-2 text-white font-medium rounded-xl shadow-md">
+        Run Formatting & Download
+      </button>
+    </div>
+
+  </form>
+</div>
 {% endblock %}
