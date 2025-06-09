@@ -63,25 +63,27 @@ def format_workbook(template_file: BytesIO,
                 new_row.append(val)
 
             elif header == "TEL_NUM":
-                val = (src.get("MotherContact")
-                       or src.get("FatherContact")
-                       or src.get("GuardianContact")
-                       or "")
+                if pd.notna(src.get("MotherContact")) and str(src.get("MotherContact")).strip():
+                    val = src.get("MotherContact", "")
+                elif pd.notna(src.get("FatherContact")) and str(src.get("FatherContact")).strip():
+                    val = src.get("FatherContact", "")
+                elif pd.notna(src.get("GuardianContact")) and str(src.get("GuardianContact")).strip():
+                    val = src.get("GuardianContact", "")
+                else:
+                    val = ""
+                new_row.append(val)
+            
+            elif header == "GNAME":
+                if pd.notna(src.get("MotherContact")) and str(src.get("MotherContact")).strip():
+                    val = src.get("Mother", "")
+                elif pd.notna(src.get("FatherContact")) and str(src.get("FatherContact")).strip():
+                    val = src.get("Father", "")
+                elif pd.notna(src.get("GuardianContact")) and str(src.get("GuardianContact")).strip():
+                    val = src.get("Guardian", "")
+                else:
+                    val = ""
                 new_row.append(val)
 
-            elif header == "GNAME":
-                if src.get("MotherContact"):
-                    val = src.get("Mother", "")
-                elif src.get("FatherContact"):
-                    val = src.get("Father", "")
-                elif src.get("GuardianContact"):
-                    val = src.get("Gaurdian", "")
-                else:
-                    val = (src.get("Mother")
-                           or src.get("Father")
-                           or src.get("Gaurdian")
-                           or "")
-                new_row.append(val)
 
             elif header.startswith("PAPER0") and header[-2:].isdigit():
                 idx = int(header[-2:]) - 1
