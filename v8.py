@@ -170,28 +170,7 @@ class ExcelMapperApp(ctk.CTk):
 
         wb.save(self.output_path)
 
-        # Fixed-width ASCII Export
-        ascii_output_path = self.output_path.replace(".xlsx", "_ascii.txt")
-
-        # Determine column widths
-        col_widths = [len(str(header)) for header in headers]
-        for row in rows_to_add:
-            for i, val in enumerate(row):
-                val_len = len(str(val)) if val is not None else 0
-                col_widths[i] = max(col_widths[i], val_len)
-
-        with open(ascii_output_path, "w", encoding="iso-8859-1") as f:
-            # Write headers
-            for i, header in enumerate(headers):
-                f.write(str(header).ljust(col_widths[i] + 2))
-            f.write("\n")
-
-            # Write rows
-            for row in rows_to_add:
-                for i, val in enumerate(row):
-                    val_str = str(val) if val is not None else ""
-                    f.write(val_str.ljust(col_widths[i] + 2))
-                f.write("\n")
+       
 
         self.progress.set(1)
         self.status_label.configure(text="✅ Formatting Complete!")

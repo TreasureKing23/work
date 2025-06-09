@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-4">📄 Excel Data Formatter (Web)</h2>
+
+<form method="POST" enctype="multipart/form-data" class="card card-body bg-secondary">
+  <div class="mb-3">
+    <label class="form-label">Select Exam</label>
+    <select name="exam" class="form-select">
+      <option value="PEP4">PEP4</option>
+      <option value="PEP5">PEP5</option>
+      <option value="PEP6" selected>PEP6</option>
+    </select>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Input Specification (Workbook 1)</label>
+    <input type="file" name="input_spec" accept=".xlsx" class="form-control" required />
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Data File (Workbook 2)</label>
+    <input type="file" name="data_file" accept=".xlsx" class="form-control" required />
+  </div>
+
+  <button type="submit" class="btn btn-primary">Run Formatting &amp; Download</button>
+</form>
+{% endblock %}
