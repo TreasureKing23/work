@@ -20,6 +20,12 @@ FIELD_MAP = {
     "SRN": "SRN"
 }
 
+COUNT_MAP={
+    "SchoolCode" : "SCHOOLID" , "SchoolName": "SCHOOLN","Region":"REGION",
+    "Male":"MALE_CNT", "Female": "FEM_CNT", "Total": "TOTAL"
+}
+
+
 PAPERS = {
     "PEP6": [
         "Ability", "Mathematics PT", "Language Arts PT",
@@ -36,7 +42,8 @@ PAPERS = {
 
 def format_workbook(template_file: BytesIO,
                     data_file: BytesIO,
-                    exam: str) -> BytesIO:
+                    exam: str,
+                    mode: str = "register") -> BytesIO:
     """
     Runs the mapping/formatting logic and returns an in-memory xlsx stream.
     """
@@ -46,6 +53,39 @@ def format_workbook(template_file: BytesIO,
     wb = load_workbook(template_file)
     ws = wb.active
     headers = [c.value for c in ws[1]]
+
+
+    if mode == "count":
+
+        df_src. columns = df_src.columns.str.strip()
+        for col in ("Male", "Female", "Total"):
+            if col not in df_src.columns:
+                df_src[col]= 0
+            df_src[col] = pd.to_numeric(df_src[col], errors="coerce").fillna(0)
+    
+
+        group_cols = ["SchoolCode", "SchoolName","Region"]
+        df_src = (df_src.groupby(group_cols, as_index=False)[["Male","Female","Total"]].sum())
+
+        if "Total" not in df_src.columns or df_src["Total"].eq(0).all():
+            df_src["Total"] = df_src["Male"] + df_src["Female"]
+
+        rows_to_append= []
+        for _, src in df_src.iterrows():
+            new_row = []
+            for header in headers:
+                src_key = next ((k for k, v in COUNT_MAP.items() if v == header), None)
+                new_row.append(src.get(src_key, ""))
+            rows_to_append.append(new_row)
+        
+        for r in rows_to_append:
+            ws.append(r)
+        
+        output = BytesIO()
+        wb.save(output)
+        output.seek(0)
+        return output
+
 
     paper_names = PAPERS.get(exam, [])
 

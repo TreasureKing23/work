@@ -18,6 +18,7 @@ app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024   # 20 MB
 def index():
     if request.method == "POST":
         exam = request.form.get("exam")
+        mode = request.form.get("mode")
         inp = request.files.get("input_spec")
         data = request.files.get("data_file")
 
@@ -33,7 +34,7 @@ def index():
         out_stream = mapping.format_workbook(inp_stream, data_stream, exam)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = secure_filename(f"{exam}_formatted_{timestamp}.xlsx")
+        filename = secure_filename(f"{exam}_{mode}_formatted_{timestamp}.xlsx")
 
         return send_file(out_stream,
                          as_attachment=True,
