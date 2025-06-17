@@ -6,7 +6,7 @@ from io import BytesIO
 FIELD_MAP = {
     "ExamCode": "EXAMID", "ExamYear": "PERIODID", "EXCID": "CANID", "ERN": "ERN",
     "FirstName": "FNAME", "Lastname": "SURNAME", "Middlename": "MNAME",
-    "SchoolId": "SCHOOLID", "SchoolName": "SCHOOLN", "Gender": "GENDER",
+    "SchoolCode": "SCHOOLID", "SchoolName": "SCHOOLN", "Gender": "GENDER",
     "DateofBirth": "DOB", "Address": "ADDR1", "Address_2": "ADDR2",
     "ContactEmail": "EMAIL", "LMS_Account": "LMS", "PathNo": "PATH",
     "WardofState": "WARD", "Sector": "SECTOR", "Parish": "PARISH", "Region": "REGION",
@@ -21,7 +21,7 @@ FIELD_MAP = {
 }
 
 COUNT_MAP={
-    "SchoolCode" : "SCHOOLID" , "SchoolName": "SCHOOLN","Region":"REGION",
+    "SchoolCode" : "SCHOOLID" , "SchoolName": "SCHOOLN", "Parish":"PARISH", "Region":"REGION",
     "Male":"MALE_CNT", "Female": "FEM_CNT", "Total": "TOTAL"
 }
 
@@ -43,6 +43,7 @@ PAPERS = {
 def format_workbook(template_file: BytesIO,
                     data_file: BytesIO,
                     exam: str,
+                    period:str = "2023",
                     mode: str = "register") -> BytesIO:
     """
     Runs the mapping/formatting logic and returns an in-memory xlsx stream.
@@ -56,26 +57,35 @@ def format_workbook(template_file: BytesIO,
 
 
     if mode == "count":
-
-        df_src. columns = df_src.columns.str.strip()
+        df_src.columns = df_src.columns.str.strip()
         for col in ("Male", "Female", "Total"):
             if col not in df_src.columns:
                 df_src[col]= 0
             df_src[col] = pd.to_numeric(df_src[col], errors="coerce").fillna(0)
     
 
-        group_cols = ["SchoolCode", "SchoolName","Region"]
+        group_cols = ["SchoolCode", "SchoolName","Parish","Region"]
         df_src = (df_src.groupby(group_cols, as_index=False)[["Male","Female","Total"]].sum())
 
         if "Total" not in df_src.columns or df_src["Total"].eq(0).all():
             df_src["Total"] = df_src["Male"] + df_src["Female"]
 
+        
         rows_to_append= []
         for _, src in df_src.iterrows():
             new_row = []
             for header in headers:
-                src_key = next ((k for k, v in COUNT_MAP.items() if v == header), None)
-                new_row.append(src.get(src_key, ""))
+                if header == "EXAMID":
+                    new_row.append(exam)
+                elif header == "PERIODID":
+                    new_row.append(period)
+
+                else:
+                    src_key = next ((k for k, v in COUNT_MAP.items() if v == header), None)
+                    if src_key and src_key in src:
+                        new_row.append(src[src_key])
+                    else:
+                        new_row.append("")
             rows_to_append.append(new_row)
         
         for r in rows_to_append:
@@ -119,7 +129,7 @@ def format_workbook(template_file: BytesIO,
                 elif pd.notna(src.get("FatherContact")) and str(src.get("FatherContact")).strip():
                     val = src.get("Father", "")
                 elif pd.notna(src.get("GuardianContact")) and str(src.get("GuardianContact")).strip():
-                    val = src.get("Guardian", "")
+                    val = src.get("Gaurdian", "")
                 else:
                     val = ""
                 new_row.append(val)

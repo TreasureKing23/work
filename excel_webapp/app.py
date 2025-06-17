@@ -9,7 +9,7 @@ UPLOAD_FOLDER = "uploads"   # simple temp folder
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 app = Flask(__name__)
-app.secret_key = "replace-with-a-secret"
+app.secret_key = ""
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 app.config["MAX_CONTENT_LENGTH"] = 20 * 1024 * 1024   # 20 MB
 
@@ -19,6 +19,7 @@ def index():
     if request.method == "POST":
         exam = request.form.get("exam")
         mode = request.form.get("mode")
+        period = request.form.get("period")
         inp = request.files.get("input_spec")
         data = request.files.get("data_file")
 
@@ -31,7 +32,7 @@ def index():
         data_stream = BytesIO(data.read())
 
         # Run formatter
-        out_stream = mapping.format_workbook(inp_stream, data_stream, exam)
+        out_stream = mapping.format_workbook(inp_stream, data_stream, exam, period,mode)
 
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = secure_filename(f"{exam}_{mode}_formatted_{timestamp}.xlsx")

@@ -25,6 +25,14 @@
       </select>
     </div>
 
+    <!-- Year Select-->
+    <div id="period-input" style="display: none;">
+      <label class="block mb-2 text-sm font-medium text-gray-700">Enter Period</label>
+      <input type="number" name="period" min="2000" max="{{ current_year }}"
+            class="w-full border border-gray-300 rounded-lg px-3 py-2 text-gray-800"
+            placeholder="e.g., 2025">
+    </div>
+
     <!-- Workbook 1 -->
     <div>
       <label class="block mb-2 text-sm font-medium text-gray-700">Input Specification (Workbook 1)</label>
@@ -51,4 +59,17 @@
 
   </form>
 </div>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const modeSelect = document.querySelector('select[name="mode"]');
+    const yearInputDiv = document.getElementById('period-input');
+
+    function toggleYearInput() {
+      yearInputDiv.style.display = (modeSelect.value === 'count') ? 'block' : 'none';
+    }
+
+    modeSelect.addEventListener('change', toggleYearInput);
+    toggleYearInput(); // run on page load
+  });
+</script>
 {% endblock %}
