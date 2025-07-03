@@ -5,7 +5,7 @@ from io import BytesIO
 REGISTER_MAP ={
     "ExamCode": "EXAMID", "ExamYear": "PERIODID", "EXCID": "CANID", "ERN": "ERN",
     "FirstName": "FNAME", "Lastname": "SURNAME", "Middlename": "MNAME",
-    "SchoolCode": "SCHOOLID", "SchoolName": "SCHOOLN", "Gender": "GENDER",
+    "Schoolcode": "SCHOOLID", "SchoolName": "SCHOOLN", "Gender": "GENDER",
     "DateofBirth": "DOB", "Address": "ADDR1", "Address_2": "ADDR2",
     "ContactEmail": "EMAIL", "LMS_Account": "LMS", "PathNo": "PATH",
     "WardofState": "WARD", "Sector": "SECTOR", "Parish": "PARISH", "Region": "REGION",
@@ -56,7 +56,7 @@ def formatting(input_specification: BytesIO,
             dw_data[col] = pd.to_numeric(dw_data[col], errors="coerce").fillna(0)
         
         group_cols = ["SchoolCode", "SchoolName", "Parish","Region"]
-        dw_data = (dw_data.groupby(group_cols, as_index="False")[["Male","Female","Total"]].sum())
+        dw_data = (dw_data.groupby(group_cols, as_index=False)[["Male","Female","Total"]].sum())
 
         if "Total" not in dw_data.columns or dw_data["Total"].eq(0).all():
             dw_data["Total"] = dw_data["Male"] + dw_data["Female"]
@@ -99,7 +99,7 @@ def formatting(input_specification: BytesIO,
                 val = data[data_key]
                 if header in ("PATH", "WARD"):
                     val = "Y" if pd.notna(val) and str(val).strip() else "N"
-                    new_row.append(val)
+                new_row.append(val)
 
             elif header == "TEL_NUM":
                 if pd.notna(data.get("MotherContact")) and str(data.get("MotherContact")).strip():
@@ -120,7 +120,14 @@ def formatting(input_specification: BytesIO,
                 elif pd.notna(data.get("GuardianContact")) and str(data.get("GuardianContact")).strip():
                     val = data.get("Gaurdian", "")
                 else:
-                    val = ""
+                    if pd.notna(data.get("Mother")):
+                        val = data.get("Mother", "")
+                    elif pd.notna(data.get("Father")):
+                        val = data.get("Father", "")
+                    elif pd.notna(data.get("Guardian")):
+                        val = data.get("Guardian", "")
+                    else:
+                        val = ""
                 new_row.append(val)
 
             elif header.startswith("PAPER0") and header[-2]:
