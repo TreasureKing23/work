@@ -76,6 +76,9 @@ def formatting(input_specification: BytesIO,
                     if data_key and data_key in data:
                         val = data[data_key]
 
+                        if header == "SCHOOLID":
+                                val = str(val).zfill(5)
+
                         if header == "REGION" and isinstance(val, str):
                             if "." in val:
                                 val = val.split(".", 1)[-1].strip()
@@ -112,6 +115,9 @@ def formatting(input_specification: BytesIO,
 
             if data_key in data:
                 val = data[data_key]
+
+                if header == "SCHOOLID":
+                    val = str(val).zfill(5)
 
                 if header == "REGION" and isinstance(val, str):
                     if "." in val:
