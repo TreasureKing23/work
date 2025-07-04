@@ -27,14 +27,14 @@ COUNT_MAP={
 
 PAPERS ={
     "PEP6": [
-        "Ability", "Mathematics PT", "Language Arts PT",
-        "Mathematics CBT", "Science CBT", "Social Studies CBT", "Language Arts CBT"
+        "ABILITY", "MATHEMATICS - PT", "LANGUAGE ARTS - PT",
+        "MATHEMATICS - CBT", "SCIENCE - CBT", "SOCIAL STUDIES - CBT", "LANGUAGE ARTS - CBT"
     ],
     "PEP5": [
-        "Mathematics PT", "Science PT", "Social Studies PT", "Language PT"
+        "MATHEMATICS - PT", "SCIENCE - PT", "SOCIAL STUDIES - PT", "LANGUAGE ARTS - PT"
     ],
     "PEP4": [
-        "Mathematics PT", "Numeracy", "Language PT", "Literacy"
+        "MATHEMATICS - PT", "NUMERACY", "LANGUAGE ARTS - PT", "LITERACY"
     ]
 }
 
@@ -148,6 +148,16 @@ def formatting(input_specification: BytesIO,
                     val = data.get("GuardianContact", "")
                 else:
                     val = ""
+
+                if isinstance(val, str):
+                    val = val.strip()
+                # Remove if not long enough
+                if len(val) < 14:
+                    val = ""
+                # Remove if area code is not (876) or (658)
+                elif not (val.startswith("(876)") or val.startswith("(658)")):
+                    val = ""
+
                 new_row.append(val)
 
             elif header == "GNAME":
